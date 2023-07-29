@@ -5,3 +5,9 @@ Consulted the following link to set up the gerrit instance https://hub.docker.co
 * Created the ssh keys with 'ssh-keygen -t rsa -f ./gerrit/etc/ssh_host_rsa_key'
 * Created 'local_repositories' folder, this is where all the 'local' git repos
   will be created, to simulate events on gerrit.
+
+
+To run the docker:
+'docker-compose run' inside './docker' dir
+To stop:
+'docker-dompose down'
