@@ -1,8 +1,0 @@
-version: '3'
-
-services:
-  gerrit:
-    image: gerritcodereview/gerrit
-    ports:
-      - "29418:29418"
-      - "8080:8080"

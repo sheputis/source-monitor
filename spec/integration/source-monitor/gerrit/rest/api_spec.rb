@@ -12,7 +12,7 @@ RSpec.describe SourceMonitor::Gerrit::REST::API do
 
   describe '#get' do
     context 'when requesting any changes' do
-      let(:url_slug) { '/a/changes' }
+      let(:url_slug) { '/a/changes/' }
 
       it 'returns some results' do
         expect(connection.get(url_slug)).not_to be_empty
