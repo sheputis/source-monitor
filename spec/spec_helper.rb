@@ -4,6 +4,7 @@ require 'bundler/setup'
 
 TEST_GERRIT_USR = 'admin'
 TEST_GERRIT_PSW = 'secret'
+BASE_URL        = 'http://localhost:8080'
 
 if ENV.fetch('COVERAGE', 'false') == 'true'
   require 'simplecov'

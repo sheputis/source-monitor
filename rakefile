@@ -5,6 +5,7 @@ Dir.glob('spec/**/rake').each { |r| load r }
 
 TEST_GERRIT_USR = 'admin'
 TEST_GERRIT_PSW = 'secret'
+BASE_URL        = 'http://localhost:8080'
 
 desc 'Starts the local gerrit server'
 task :start_gerrit_server do
@@ -14,4 +15,5 @@ end
 desc 'Prepares git data for end-to-end tests and uploads them to the local server'
 task :prepare_gerrit_data do
   Rake::Task['rest:create'].invoke
+  Rake::Task['gerrit_changes_api:create'].invoke
 end

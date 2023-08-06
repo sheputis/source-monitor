@@ -7,7 +7,7 @@ RSpec.describe SourceMonitor::Gerrit::REST::API do
 
   let(:user)     { TEST_GERRIT_USR }
   let(:pass)     { TEST_GERRIT_PSW }
-  let(:base_url) { 'http://localhost:8080' }
+  let(:base_url) { BASE_URL }
   let(:url_slug) { '/a/changes' }
 
   describe '#get' do

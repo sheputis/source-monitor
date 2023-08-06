@@ -1,0 +1,2 @@
+test-gerrit/*
+!test-gerrit/rake
