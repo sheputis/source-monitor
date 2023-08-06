@@ -54,4 +54,22 @@ RSpec.describe SourceMonitor::Gerrit::API::Changes do
       end
     end
   end
+
+  describe '#get_content' do
+    subject(:get_content) do
+      changes.get_content(
+        identifier.change_id,
+        identifier.revision_id,
+        'dummy.txt'
+      )
+    end
+
+    context 'when the patchset exist' do # see the test project 'dummy_gerrit_changes_project'
+      let(:expected_result) { "Dummy change\n" }
+
+      it 'returns the files in the specified patchset' do
+        expect(get_content).to eq expected_result
+      end
+    end
+  end
 end
