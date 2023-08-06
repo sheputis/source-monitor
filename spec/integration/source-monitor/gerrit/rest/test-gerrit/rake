@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+namespace :rest do
+  desc 'Creates a dummy project, a dummy commit and uploads it as a patchset'
+  task :create do
+    # Get the current working directory (where the Rakefile is located)
+    project_dir = File.dirname(__FILE__)
+    project_name = 'dummy_rest_project'
+    # Change the working directory to the project directory
+    Dir.chdir(project_dir) do
+      # Create and commit your changes locally
+      sh "curl -X PUT \"http://#{TEST_GERRIT_USR}:#{TEST_GERRIT_PSW}@localhost:8080/a/projects/#{project_name}\""
+      sh "git clone \"http://#{TEST_GERRIT_USR}:#{TEST_GERRIT_PSW}@localhost:8080/#{project_name}\""
+      Dir.chdir(project_name) do
+        sh 'echo "Dummy change" > dummy.txt'
+        sh 'git add dummy.txt'
+        commit_msg = "Dummy change\n\nChange-Id: Iaa073c1a537972931a9a5c8749cd54987ea44cdc"
+        sh "git commit -m \"#{commit_msg}\""
+        sh "git push http://#{TEST_GERRIT_USR}:#{TEST_GERRIT_PSW}@localhost:8080/a/#{project_name} HEAD:refs/for/master"
+      end
+    end
+  end
+end

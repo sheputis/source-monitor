@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+# Load all Rakefiles in the project
+Dir.glob('spec/**/rake').each { |r| load r }
+
+TEST_GERRIT_USR = 'admin'
+TEST_GERRIT_PSW = 'secret'
+
+desc 'Prepares git data for end-to-end tests and uploads them to the local server'
+task :prepare_gerrit_data do
+  Rake::Task['rest:create'].invoke
+end

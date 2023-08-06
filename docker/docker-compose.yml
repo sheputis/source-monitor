@@ -3,11 +3,6 @@ version: '3'
 services:
   gerrit:
     image: gerritcodereview/gerrit
-    volumes:
-      - ./gerrit/git:/var/gerrit/git
-      - ./gerrit/index:/var/gerrit/index
-      - ./gerrit/cache:/var/gerrit/cache
-      - ./gerrit/etc:/var/gerrit/etc
     ports:
       - "29418:29418"
       - "8080:8080"

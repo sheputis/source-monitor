@@ -5,8 +5,8 @@ require 'source-monitor/gerrit/rest/api'
 RSpec.describe SourceMonitor::Gerrit::REST::API do
   subject(:connection) { described_class.new(user: user, key: pass, base_uri: base_url) }
 
-  let(:user)     { 'admin' }
-  let(:pass)     { 'secret' }
+  let(:user)     { TEST_GERRIT_USR }
+  let(:pass)     { TEST_GERRIT_PSW }
   let(:base_url) { 'http://localhost:8080' }
   let(:url_slug) { '/a/changes' }
 
