@@ -1,15 +1,38 @@
 # frozen_string_literal: true
 
+require 'net/http'
+
 # Load all Rakefiles in the project
 Dir.glob('spec/**/rake').each { |r| load r }
 
 TEST_GERRIT_USR = 'admin'
 TEST_GERRIT_PSW = 'secret'
-BASE_URL        = 'http://localhost:8080'
+HOSTNAME        = 'localhost:8080'
+BASE_URL        = "http://#{HOSTNAME}"
+
+# @param [Integer] max_attempts
+# @param [Integer] sleep_duration
+# @raise [RuntimeError] If server does not respond after 'max_attempts'
+def ping_server(max_attempts: 10, sleep_duration: 10)
+  url = URI.parse(BASE_URL)
+  max_attempts.times do |nr|
+    puts "Ping nr: #{nr}..."
+    begin
+      return if Net::HTTP.get_response(url).is_a?(Net::HTTPSuccess)
+    rescue StandardError => e
+      puts "Error while pinging the server: #{e.message}"
+    end
+
+    sleep sleep_duration
+  end
+  raise "Server not running or not reachable after #{max_attempts} attempts"
+end
 
 desc 'Starts the local gerrit server'
 task :start_gerrit_server do
-  sh 'docker run -ti -p 8080:8080 -p 29418:29418 gerritcodereview/gerrit:3.3.0 -d'
+  sh 'docker run -ti -p 8080:8080 -p 29418:29418 -d gerritcodereview/gerrit:3.3.0'
+  ping_server
+  puts 'Started up succesfully'
 end
 
 desc 'Prepares git data for end-to-end tests and uploads them to the local server'

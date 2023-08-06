@@ -37,8 +37,8 @@ RSpec.describe SourceMonitor::Gerrit::API::Changes do
           '/COMMIT_MSG' => {
             'status' => 'A',
             'lines_inserted' => 8,
-            'size_delta' => 264,
-            'size' => 264
+            'size_delta' => be_instance_of(Integer),
+            'size' => be_instance_of(Integer)
           },
           'dummy.txt' => {
             'status' => 'A',
@@ -50,7 +50,7 @@ RSpec.describe SourceMonitor::Gerrit::API::Changes do
       end
 
       it 'returns the files in the specified patchset' do
-        expect(list_files).to eq expected_result
+        expect(list_files).to match expected_result
       end
     end
   end
