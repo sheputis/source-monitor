@@ -9,6 +9,7 @@ module SourceMonitor
       # https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-endpoints
       class Changes
         ENDPOINT = '/a/changes'
+
         attr_reader :rest_api
 
         def initialize(rest_api)
