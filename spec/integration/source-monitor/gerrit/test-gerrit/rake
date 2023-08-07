@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+FILE_1 = "one\ntwo\nthree\nfour\n"
+FILE_2 = "what\nis\ngoing\non\n"
+
+namespace :patchset do
+  desc 'Creates a dummy project, a dummy commit and uploads it as a patchset'
+  task :create do
+    # Get the current working directory (where the Rakefile is located)
+    project_dir = File.dirname(__FILE__)
+    project_name = 'dummy_patchset_change'
+
+    # Change the working directory to the project directory
+    Dir.chdir(project_dir) do
+      # Create and commit your changes locally
+      sh "curl -X PUT \"http://#{TEST_GERRIT_USR}:#{TEST_GERRIT_PSW}@#{HOSTNAME}/a/projects/#{project_name}\""
+      sh "git clone \"http://#{TEST_GERRIT_USR}:#{TEST_GERRIT_PSW}@#{HOSTNAME}/#{project_name}\""
+      Dir.chdir(project_name) do
+        sh "echo \"#{FILE_1}\" > file_1.txt"
+        sh "echo \"#{FILE_2}\" > file_2.txt"
+        sh 'git add file_1.txt'
+        sh 'git add file_2.txt'
+        commit_msg = "Upload a patchset for Patchset \n\nChange-Id: Iaa00000000000000000000000000000000000001"
+        sh "git commit -m \"#{commit_msg}\""
+        sh "git push http://#{TEST_GERRIT_USR}:#{TEST_GERRIT_PSW}@#{HOSTNAME}/a/#{project_name} HEAD:refs/for/master"
+      end
+    end
+  end
+end
