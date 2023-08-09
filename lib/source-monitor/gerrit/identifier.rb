@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/object/blank'
 require 'erb'
 
 module SourceMonitor
@@ -11,21 +12,55 @@ module SourceMonitor
 
       include ERB::Util
 
-      attr_reader :change_id_nr,
-                  :project,
-                  :branch,
-                  :revision_id # https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#revision-id
+      def initialize(change_id_nr: nil, revision_id: DEFAULT_REVISION_ID, project: nil, branch: nil)
+        @change_id_nr_raw = url_encode(change_id_nr).presence
+        @revision_id_raw  = url_encode(revision_id).presence
+        @project_raw      = url_encode(project).presence
+        @branch_raw       = url_encode(branch).presence
+      end
 
-      def initialize(change_id_nr, revision_id: DEFAULT_REVISION_ID, project: nil, branch: nil)
-        @change_id_nr = change_id_nr
-        @revision_id = revision_id
-        @project = project
-        @branch = branch
+      def change_id_nr
+        @change_id_nr ||= resolve_change_id_nr
+      end
+
+      # https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#revision-id
+      def revision_id
+        @revision_id ||= resolve_revision_id
+      end
+
+      def project
+        @project ||= resolve_project
       end
 
       # https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-id
       def change_id
-        @change_id ||= [project, branch, change_id_nr].compact.map { |param| url_encode(param) }.join('~')
+        @change_id ||= resolve_change_id
+      end
+
+      private
+
+      def resolve_change_id_nr
+        raise(StandardError, '"change_id_nr" was not defined') unless change_id_nr_raw
+
+        change_id_nr_raw
+      end
+
+      def resolve_revision_id
+        raise(StandardError, '"revision_id" was not defined') unless revision_id_raw
+
+        revision_id_raw
+      end
+
+      def resolve_project
+        raise(StandardError, '"project" was not defined') unless project_raw
+
+        project_raw
+      end
+
+      def resolve_change_id
+        raise(StandardError, 'At least "change_id_nr" must be specified') unless change_id_nr
+
+        [project_raw, branch_raw, change_id_nr_raw].compact.join('~')
       end
     end
   end
