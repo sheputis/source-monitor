@@ -12,6 +12,10 @@ module SourceMonitor
 
       include ERB::Util
 
+      # @param [String, nil] change_id_nr
+      # @param [String] revision_id
+      # @param [String, nil] project
+      # @param [String, nil] branch
       def initialize(change_id_nr: nil, revision_id: DEFAULT_REVISION_ID, project: nil, branch: nil)
         @change_id_nr_raw = url_encode(change_id_nr).presence
         @revision_id_raw  = url_encode(revision_id).presence
@@ -37,7 +41,13 @@ module SourceMonitor
         @change_id ||= resolve_change_id
       end
 
+      def branch
+        @branch ||= resolve_branch
+      end
+
       private
+
+      attr_reader :change_id_nr_raw, :revision_id_raw, :project_raw, :branch_raw
 
       def resolve_change_id_nr
         raise(StandardError, '"change_id_nr" was not defined') unless change_id_nr_raw
@@ -57,10 +67,14 @@ module SourceMonitor
         project_raw
       end
 
-      def resolve_change_id
-        raise(StandardError, 'At least "change_id_nr" must be specified') unless change_id_nr
+      def resolve_branch
+        raise(StandardError, '"branch" was not defined') unless branch_raw
 
-        [project_raw, branch_raw, change_id_nr_raw].compact.join('~')
+        branch_raw
+      end
+
+      def resolve_change_id
+        [project_raw, branch_raw, change_id_nr].compact.join('~')
       end
     end
   end
